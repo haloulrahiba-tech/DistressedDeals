@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   String   @id @default(uuid())
+  email                String   @unique
+  passwordHash         String
+  phone                String?
+  role                 String   @default("buyer")
+  languagePreference   String   @default("en")
+  emailVerified        Boolean  @default(false)
+  phoneVerified        Boolean  @default(false)
+  titleDeedVerified    Boolean  @default(false)
+  isPremium            Boolean  @default(false)
+  premiumStartedAt     DateTime?
+  premiumExpiresAt     DateTime?
+  stripeCustomerId     String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  listings             Listing[]
+  inquiriesSent        Inquiry[] @relation("BuyerInquiries")
+  inquiriesReceived    Inquiry[] @relation("SellerInquiries")
+}
+
+model Listing {
+  id                   String   @id @default(uuid())
+  userId               String
+  titleEn              String
+  titleAr              String?
+  descriptionEn        String
+  descriptionAr        String?
+  propertyType         String
+  bedrooms             Int?
+  bathrooms            Int?
+  sizeSqft             Int?
+  emirate              String
+  area                 String
+  latitude             Float?
+  longitude            Float?
+  distressCategory     String
+  askingPrice          Float
+  marketPrice          Float?
+  discountPercentage   Float?
+  dealGrade            String?
+  deedNumber           String
+  status               String   @default("pending")
+  publishedAt          DateTime?
+  viewCount            Int      @default(0)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  user                 User     @relation(fields: [userId], references: [id])
+  inquiries            Inquiry[]
+}
+
+model Inquiry {
+  id                   String   @id @default(uuid())
+  listingId            String
+  buyerId              String
+  sellerId             String
+  message              String
+  status               String   @default("new")
+  createdAt            DateTime @default(now())
+  listing              Listing  @relation(fields: [listingId], references: [id])
+  buyer                User     @relation("BuyerInquiries", fields: [buyerId], references: [id])
+  seller               User     @relation("SellerInquiries", fields: [sellerId], references: [id])
+}

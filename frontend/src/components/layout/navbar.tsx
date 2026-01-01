@@ -49,7 +49,7 @@ export function Navbar() {
                         }`}>EN/AR</Button>
                     <Link href="/list-property">
                         <Button variant="outline" size="sm" className={`cursor-pointer transition-all ${isScrolled
-                            ? 'border-primary/50 text-primary hover:bg-primary/5'
+                            ? 'border-primary/50 text-primary hover:bg-primary/5 hover:text-primary'
                             : 'border-white/50 text-primary hover:bg-white hover:text-black'
                             }`}>
                             List a Property
